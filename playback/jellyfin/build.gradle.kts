@@ -28,9 +28,6 @@ dependencies {
 	// Kotlin
 	implementation(libs.kotlinx.coroutines)
 
-	// Android(x)
-	implementation(libs.androidx.lifecycle.runtime)
-
 	// Jellyfin
 	implementation(projects.playback.core)
 	implementation(libs.jellyfin.sdk) {

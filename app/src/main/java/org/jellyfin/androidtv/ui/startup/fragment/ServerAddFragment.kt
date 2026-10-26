@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +15,7 @@ import org.jellyfin.androidtv.auth.model.ConnectingState
 import org.jellyfin.androidtv.auth.model.UnableToConnectState
 import org.jellyfin.androidtv.databinding.FragmentServerAddBinding
 import org.jellyfin.androidtv.ui.startup.ServerAddViewModel
-import org.jellyfin.androidtv.util.createBundle
+import org.jellyfin.androidtv.ui.startup.StartupActivity
 import org.jellyfin.androidtv.util.getSummary
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -90,17 +87,7 @@ class ServerAddFragment : Fragment() {
 					)
 				}
 
-				is ConnectedState -> parentFragmentManager.commit {
-					// Open server view
-					replace<StartupToolbarFragment>(R.id.content_view)
-					add<ServerFragment>(
-						R.id.content_view,
-						null,
-						createBundle {
-							putString(ServerFragment.ARG_SERVER_ID, state.id.toString())
-						}
-					)
-				}
+				is ConnectedState -> (requireActivity() as StartupActivity).openMainActivity(state.id)
 
 				null -> Unit
 			}

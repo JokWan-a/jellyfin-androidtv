@@ -53,7 +53,6 @@ import org.jellyfin.androidtv.ui.settings.compat.SettingsViewModel
 import org.jellyfin.androidtv.ui.settings.screen.library.SettingsLibrariesScreenViewModel
 import org.jellyfin.androidtv.ui.startup.ServerAddViewModel
 import org.jellyfin.androidtv.ui.startup.StartupViewModel
-import org.jellyfin.androidtv.ui.startup.UserLoginViewModel
 import org.jellyfin.androidtv.util.AndroidVersion
 import org.jellyfin.androidtv.util.KeyProcessor
 import org.jellyfin.androidtv.util.MarkdownRenderer
@@ -158,8 +157,7 @@ val appModule = module {
 	single { VimuExternalPlayerApi() } bind ExternalPlayerApi::class
 	single { DefaultExternalPlayerApi() }
 
-	viewModel { StartupViewModel(get(), get(), get(), get()) }
-	viewModel { UserLoginViewModel(get(), get(), get(), get(defaultDeviceInfo)) }
+	viewModel { StartupViewModel(get()) }
 	viewModel { ServerAddViewModel(get()) }
 	viewModel { NextUpViewModel(get(), get(), get()) }
 	viewModel { StillWatchingViewModel(get(), get(), get(), get()) }

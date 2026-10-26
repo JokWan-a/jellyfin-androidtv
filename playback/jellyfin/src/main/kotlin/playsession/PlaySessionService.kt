@@ -3,7 +3,6 @@ package org.jellyfin.playback.jellyfin.playsession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.playback.core.mediastream.MediaConversionMethod
 import org.jellyfin.playback.core.mediastream.mediaStream
@@ -52,10 +51,6 @@ class PlaySessionService(
 			RepeatMode.REPEAT_ENTRY_ONCE -> SdkRepeatMode.REPEAT_ONE
 			RepeatMode.REPEAT_ENTRY_INFINITE -> SdkRepeatMode.REPEAT_ALL
 		}
-
-	suspend fun sendUpdateIfActive() {
-		coroutineScope.launch { sendStreamUpdate() }
-	}
 
 	private suspend fun getQueue(): List<QueueItem> {
 		// The queues are lazy loaded so we only load a small amount of items to set as queue on the

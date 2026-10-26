@@ -400,7 +400,6 @@ class LeanbackChannelWorker(
 			)
 			.setIntent(Intent(context, StartupActivity::class.java).apply {
 				putExtra(StartupActivity.EXTRA_ITEM_ID, item.id.toString())
-				putExtra(StartupActivity.EXTRA_ITEM_IS_USER_VIEW, item.type == BaseItemKind.COLLECTION_FOLDER)
 			})
 			.setDurationMillis(
 				if (item.runTimeTicks?.ticks != null) {

@@ -19,7 +19,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.lifecycle.Lifecycle
@@ -42,10 +41,10 @@ import org.jellyfin.androidtv.ui.ServerButtonView
 import org.jellyfin.androidtv.ui.SpacingItemDecoration
 import org.jellyfin.androidtv.ui.base.JellyfinTheme
 import org.jellyfin.androidtv.ui.base.Text
+import org.jellyfin.androidtv.ui.startup.StartupActivity
 import org.jellyfin.androidtv.ui.startup.StartupViewModel
 import org.jellyfin.androidtv.util.ListAdapter
 import org.jellyfin.androidtv.util.MenuBuilder
-import org.jellyfin.androidtv.util.createBundle
 import org.jellyfin.androidtv.util.getSummary
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.compose.koinInject
@@ -66,19 +65,7 @@ class SelectServerFragment : Fragment() {
 		// Stored servers
 		val storedServerAdapter = ServerAdapter(
 			serverClickListener = { (_, server) ->
-				requireActivity()
-					.supportFragmentManager
-					.commit {
-						replace<StartupToolbarFragment>(R.id.content_view)
-						add<ServerFragment>(
-							R.id.content_view,
-							null,
-							createBundle {
-								putString(ServerFragment.ARG_SERVER_ID, server.id.toString())
-							}
-						)
-						addToBackStack(null)
-					}
+				(requireActivity() as StartupActivity).openMainActivity(server.id)
 			},
 			serverPopupBuilder = { server ->
 				item(getString(R.string.lbl_remove)) {
@@ -97,16 +84,7 @@ class SelectServerFragment : Fragment() {
 			serverClickListener = { (_, server) ->
 				startupViewModel.addServer(server.address).onEach { state ->
 					if (state is ConnectedState) {
-						parentFragmentManager.commit {
-							replace<StartupToolbarFragment>(R.id.content_view)
-							add<ServerFragment>(
-								R.id.content_view,
-								null,
-								createBundle {
-									putString(ServerFragment.ARG_SERVER_ID, state.id.toString())
-								}
-							)
-						}
+						(requireActivity() as StartupActivity).openMainActivity(state.id)
 					} else {
 						items = items.map {
 							if (it.server.id == server.id) StatefulServer(state, it.server)
