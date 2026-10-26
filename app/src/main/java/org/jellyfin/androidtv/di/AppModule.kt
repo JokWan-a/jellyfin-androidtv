@@ -106,7 +106,7 @@ val appModule = module {
 		get<JellyfinSdk>().createApi(httpClientOptions = get<HttpClientOptions>())
 	}
 
-	single { SocketHandler(get(), get(), get(), get(), get(), get(), get(), get(), get(), ProcessLifecycleOwner.get().lifecycle) }
+	single { SocketHandler(get(), get(), ProcessLifecycleOwner.get().lifecycle) }
 
 	// Coil (images)
 	single {
@@ -145,7 +145,7 @@ val appModule = module {
 	single<NotificationsRepository> { NotificationsRepositoryImpl(get(), get()) }
 	single<ItemMutationRepository> { ItemMutationRepositoryImpl(get(), get()) }
 	single<CustomMessageRepository> { CustomMessageRepositoryImpl() }
-	single<NavigationRepository> { NavigationRepositoryImpl(Destinations.home) }
+	single<NavigationRepository> { NavigationRepositoryImpl(Destinations.webApp) }
 	single<SearchRepository> { SearchRepositoryImpl(get()) }
 	single<MediaSegmentRepository> { MediaSegmentRepositoryImpl(get(), get()) }
 	single<ExternalAppRepository> { ExternalAppRepository(get(), getAll(), get<DefaultExternalPlayerApi>()) }

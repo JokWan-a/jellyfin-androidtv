@@ -143,6 +143,7 @@ dependencies {
 	implementation(libs.androidx.preference)
 	implementation(libs.androidx.appcompat)
 	implementation(libs.androidx.tvprovider)
+	implementation(libs.androidx.webkit)
 	implementation(libs.androidx.constraintlayout)
 	implementation(libs.androidx.recyclerview)
 	implementation(libs.androidx.work.runtime)
