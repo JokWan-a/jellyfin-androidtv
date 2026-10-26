@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import org.jellyfin.androidtv.R
@@ -92,7 +93,7 @@ fun Scope.createPlaybackManager() = playbackManager(androidContext()) {
 	install(media3SessionPlugin(get(), mediaSessionOptions))
 
 	val deviceProfileBuilder = { createDeviceProfile(androidContext(), userPreferences, get()) }
-	install(jellyfinPlugin(get(), deviceProfileBuilder, setOf(MediaSegmentType.INTRO)))
+	install(jellyfinPlugin(get(), deviceProfileBuilder, setOf(MediaSegmentType.INTRO), ProcessLifecycleOwner.get().lifecycle))
 
 	// Options
 	val userSettingPreferences = get<UserSettingPreferences>()

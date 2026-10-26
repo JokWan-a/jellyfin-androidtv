@@ -11,15 +11,10 @@ export class NativeVideoPlayerPlugin {
         this.priority = -1;
         this.isLocalPlayer = true;
 
-        // Current playback position in milliseconds
-        this._currentTime = 0;
-        this._paused = true;
-
         this._nativePlayer = window['NativePlayer'];
     }
 
     async play(options) {
-        this._paused = false;
         this._nativePlayer.loadPlayer(JSON.stringify({
             ids: options.items.map(item => item.Id),
             startIndex: options.startIndex ?? null,
@@ -49,27 +44,18 @@ export class NativeVideoPlayerPlugin {
             !this.playbackManager.syncPlayEnabled;
     }
 
-    async stop(destroyPlayer) {
-        this._nativePlayer.stopPlayer();
-
-        if (destroyPlayer) {
-            this.destroy();
-        }
-    }
+    // jellyfin-web never makes this its current player, so playback controls stay native.
+    // Remote control commands reach the native player through its own websocket instead.
+    async stop(destroyPlayer) {}
 
     nextTrack() {}
 
     previousTrack() {}
 
-    seek(ticks) {
-        this._nativePlayer.seekMs(Math.floor(ticks / 10000));
-    }
+    seek(ticks) {}
 
     currentTime(ms) {
-        if (ms !== undefined) {
-            this._nativePlayer.seekMs(ms);
-        }
-        return this._currentTime;
+        return 0;
     }
 
     duration(val) {
@@ -97,26 +83,14 @@ export class NativeVideoPlayerPlugin {
     toggleMute() {}
 
     paused() {
-        return this._paused;
+        return false;
     }
 
-    pause() {
-        this._paused = true;
-        this._nativePlayer.pausePlayer();
-    }
+    pause() {}
 
-    unpause() {
-        this._paused = false;
-        this._nativePlayer.resumePlayer();
-    }
+    unpause() {}
 
-    playPause() {
-        if (this._paused) {
-            this.unpause();
-        } else {
-            this.pause();
-        }
-    }
+    playPause() {}
 
     canSetAudioStreamIndex() {
         return false;
