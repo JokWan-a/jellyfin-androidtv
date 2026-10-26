@@ -35,6 +35,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class MainActivity : FragmentActivity() {
+	companion object {
+		const val EXTRA_WEB_ROUTE = "WebRoute"
+	}
+
 	private val navigationRepository by inject<NavigationRepository>()
 	private val sessionRepository by inject<SessionRepository>()
 	private val userRepository by inject<UserRepository>()

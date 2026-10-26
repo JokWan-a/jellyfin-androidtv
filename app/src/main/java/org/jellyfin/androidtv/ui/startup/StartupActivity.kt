@@ -58,6 +58,7 @@ class StartupActivity : FragmentActivity() {
 		const val EXTRA_ITEM_ID = "ItemId"
 		const val EXTRA_ITEM_IS_USER_VIEW = "ItemIsUserView"
 		const val EXTRA_HIDE_SPLASH = "HideSplash"
+		const val EXTRA_SELECT_SERVER = "SelectServer"
 	}
 
 	private val startupViewModel: StartupViewModel by viewModel()

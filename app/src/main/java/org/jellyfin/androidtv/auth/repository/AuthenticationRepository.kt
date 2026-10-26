@@ -47,6 +47,11 @@ import java.time.Instant
  */
 interface AuthenticationRepository {
 	fun authenticate(server: Server, method: AuthenticateMethod): Flow<LoginState>
+
+	/**
+	 * Adopt an access token obtained elsewhere (the web client) as the active native session.
+	 */
+	fun authenticateToken(server: Server, accessToken: String): Flow<LoginState>
 	fun logout(user: User): Boolean
 	fun getUserImageUrl(server: Server, user: User): String?
 }
@@ -114,6 +119,23 @@ class AuthenticationRepositoryImpl(
 		}
 
 		emitAll(authenticateAuthenticationResult(server, result))
+	}.flowOn(Dispatchers.IO)
+
+	override fun authenticateToken(server: Server, accessToken: String) = flow {
+		val api = jellyfin.createApi(server.address, accessToken = accessToken, deviceInfo = defaultDeviceInfo)
+		val userInfo = try {
+			api.userApi.getCurrentUser().content
+		} catch (err: TimeoutException) {
+			Timber.e(err, "Failed to connect to server")
+			emit(ServerUnavailableState)
+			return@flow
+		} catch (err: ApiClientException) {
+			Timber.e(err, "Unable to validate access token")
+			emit(ApiClientErrorLoginState(err))
+			return@flow
+		}
+
+		emitAll(authenticateAuthenticationResult(server, AuthenticationResult(user = userInfo, accessToken = accessToken)))
 	}.flowOn(Dispatchers.IO)
 
 	private fun authenticateAuthenticationResult(server: Server, result: AuthenticationResult) = flow {
