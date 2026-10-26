@@ -1,6 +1,5 @@
 export class NativeVideoPlayerPlugin {
-    constructor({ events, playbackManager, loading }) {
-        this.events = events;
+    constructor({ playbackManager, loading }) {
         this.playbackManager = playbackManager;
         this.loading = loading;
 
