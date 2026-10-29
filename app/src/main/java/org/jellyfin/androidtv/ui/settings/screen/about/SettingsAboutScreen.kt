@@ -19,16 +19,11 @@ import org.jellyfin.androidtv.ui.settings.composable.SettingsColumn
 import org.jellyfin.androidtv.ui.settings.util.copyAction
 
 @Composable
-fun SettingsAboutScreen(launchedFromLogin: Boolean = false) {
+fun SettingsAboutScreen() {
 	val router = LocalRouter.current
 
 	SettingsColumn {
-		if (launchedFromLogin) item {
-			ListSection(
-				overlineContent = { Text(stringResource(R.string.pref_login).uppercase()) },
-				headingContent = { Text(stringResource(R.string.pref_about_title)) },
-			)
-		} else item {
+		item {
 			ListSection(
 				overlineContent = { Text(stringResource(R.string.settings).uppercase()) },
 				headingContent = { Text(stringResource(R.string.pref_about_title)) },
@@ -68,7 +63,7 @@ fun SettingsAboutScreen(launchedFromLogin: Boolean = false) {
 			)
 		}
 
-		if (!launchedFromLogin) item {
+		item {
 			ListButton(
 				leadingContent = { Icon(painterResource(R.drawable.ic_flask), contentDescription = null) },
 				headingContent = { Text(stringResource(R.string.pref_developer_link)) },

@@ -15,16 +15,12 @@ import org.jellyfin.androidtv.auth.model.ServerUnavailableState
 import org.jellyfin.androidtv.auth.model.ServerVersionNotSupported
 import org.jellyfin.androidtv.auth.model.User
 import org.jellyfin.androidtv.auth.store.AuthenticationStore
-import org.jellyfin.androidtv.util.apiclient.JellyfinImage
-import org.jellyfin.androidtv.util.apiclient.JellyfinImageSource
-import org.jellyfin.androidtv.util.apiclient.getUrl
 import org.jellyfin.androidtv.util.apiclient.primaryImage
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.api.client.exception.TimeoutException
 import org.jellyfin.sdk.api.client.extensions.userApi
 import org.jellyfin.sdk.model.DeviceInfo
-import org.jellyfin.sdk.model.api.ImageType
 import org.jellyfin.sdk.model.api.UserDto
 import timber.log.Timber
 import java.time.Instant
@@ -38,7 +34,6 @@ interface AuthenticationRepository {
 	 */
 	fun authenticateToken(server: Server, accessToken: String): Flow<LoginState>
 	fun logout(user: User): Boolean
-	fun getUserImageUrl(server: Server, user: User): String?
 }
 
 class AuthenticationRepositoryImpl(
@@ -121,16 +116,4 @@ class AuthenticationRepositoryImpl(
 		return if (authStoreUser != null) authenticationStore.putUser(user.serverId, user.id, authStoreUser)
 		else false
 	}
-
-	override fun getUserImageUrl(server: Server, user: User): String? = user.imageTag?.let { primaryImageTag ->
-		JellyfinImage(
-			item = user.id,
-			source = JellyfinImageSource.USER,
-			type = ImageType.PRIMARY,
-			tag = primaryImageTag,
-			blurHash = null,
-			aspectRatio = null,
-			index = null
-		)
-	}?.getUrl(jellyfin.createApi(server.address))
 }

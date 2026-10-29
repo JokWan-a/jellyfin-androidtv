@@ -4,8 +4,6 @@ import org.jellyfin.androidtv.auth.repository.AuthenticationRepository
 import org.jellyfin.androidtv.auth.repository.AuthenticationRepositoryImpl
 import org.jellyfin.androidtv.auth.repository.ServerRepository
 import org.jellyfin.androidtv.auth.repository.ServerRepositoryImpl
-import org.jellyfin.androidtv.auth.repository.ServerUserRepository
-import org.jellyfin.androidtv.auth.repository.ServerUserRepositoryImpl
 import org.jellyfin.androidtv.auth.repository.SessionRepository
 import org.jellyfin.androidtv.auth.repository.SessionRepositoryImpl
 import org.jellyfin.androidtv.auth.store.AuthenticationPreferences
@@ -20,7 +18,6 @@ val authModule = module {
 		AuthenticationRepositoryImpl(get(), get(), get(), get(defaultDeviceInfo))
 	}
 	single<ServerRepository> { ServerRepositoryImpl(get(), get()) }
-	single<ServerUserRepository> { ServerUserRepositoryImpl(get()) }
 	single<SessionRepository> {
 		SessionRepositoryImpl(get(), get(), get(), get(), get(defaultDeviceInfo), get(), get(), get())
 	}

@@ -29,15 +29,6 @@ fun SettingsMainScreen() {
 
 		item {
 			ListButton(
-				leadingContent = { Icon(painterResource(R.drawable.ic_users), contentDescription = null) },
-				headingContent = { Text(stringResource(R.string.pref_login)) },
-				onClick = { router.push(Routes.AUTHENTICATION) },
-				modifier = Modifier.focusKey(Routes.AUTHENTICATION),
-			)
-		}
-
-		item {
-			ListButton(
 				leadingContent = { Icon(painterResource(R.drawable.ic_adjust), contentDescription = null) },
 				headingContent = { Text(stringResource(R.string.pref_customization)) },
 				onClick = { router.push(Routes.CUSTOMIZATION) },

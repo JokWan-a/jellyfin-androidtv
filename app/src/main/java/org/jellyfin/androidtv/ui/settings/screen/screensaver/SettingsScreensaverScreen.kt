@@ -32,32 +32,6 @@ fun SettingsScreensaverScreen() {
 		}
 
 		item {
-			var screensaverInAppEnabled by rememberPreference(userPreferences, UserPreferences.screensaverInAppEnabled)
-
-			ListButton(
-				headingContent = { Text(stringResource(R.string.pref_screensaver_inapp_enabled)) },
-				trailingContent = { Checkbox(checked = screensaverInAppEnabled) },
-				captionContent = { Text(stringResource(R.string.pref_screensaver_inapp_enabled_description)) },
-				onClick = { screensaverInAppEnabled = !screensaverInAppEnabled },
-				modifier = Modifier.focusKey("screensaver_in_app_enabled")
-			)
-		}
-
-		item {
-			var screensaverInAppTimeout by rememberPreference(userPreferences, UserPreferences.screensaverInAppTimeout)
-			val caption = getScreensaverTimeoutOptions()
-				.firstOrNull { (duration) -> duration.inWholeMilliseconds == screensaverInAppTimeout }
-				?.second.orEmpty()
-
-			ListButton(
-				headingContent = { Text(stringResource(R.string.pref_screensaver_inapp_timeout)) },
-				captionContent = { Text(caption) },
-				onClick = { router.push(Routes.CUSTOMIZATION_SCREENSAVER_TIMEOUT) },
-				modifier = Modifier.focusKey(Routes.CUSTOMIZATION_SCREENSAVER_TIMEOUT)
-			)
-		}
-
-		item {
 			var screensaverAgeRatingRequired by rememberPreference(userPreferences, UserPreferences.screensaverAgeRatingRequired)
 
 			ListButton(

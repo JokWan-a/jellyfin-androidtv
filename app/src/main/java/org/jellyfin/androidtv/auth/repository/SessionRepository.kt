@@ -68,11 +68,9 @@ class SessionRepositoryImpl(
 
 			_state.value = SessionRepositoryState.RESTORING_SESSION
 
-			val alwaysAuthenticate = authenticationPreferences[AuthenticationPreferences.alwaysAuthenticate]
 			val autoLoginBehavior = authenticationPreferences[AuthenticationPreferences.autoLoginUserBehavior]
 
 			when {
-				alwaysAuthenticate -> destroyCurrentSession()
 				autoLoginBehavior == DISABLED -> destroyCurrentSession()
 				autoLoginBehavior == LAST_USER && !destroyOnly -> setCurrentSession(createLastUserSession())
 				autoLoginBehavior == SPECIFIC_USER && !destroyOnly -> {
