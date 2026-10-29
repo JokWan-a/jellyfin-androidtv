@@ -148,12 +148,4 @@ class AuthenticationStore(context: Context) {
 		store -= server
 		return save()
 	}
-
-	fun removeUser(server: UUID, user: UUID): Boolean {
-		val serverInfo = store[server] ?: return false
-
-		store[server] = serverInfo.copy(users = serverInfo.users - user)
-
-		return save()
-	}
 }

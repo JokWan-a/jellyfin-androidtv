@@ -6,6 +6,7 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.core.net.toUri
 import androidx.webkit.WebResourceErrorCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -56,7 +57,7 @@ class JellyfinWebViewClient(
 ) : WebViewClientCompat(), KoinComponent {
 	private val authenticationRepository by inject<AuthenticationRepository>()
 	private val sessionRepository by inject<SessionRepository>()
-	private val serverOrigin = Uri.parse(server.address).origin
+	private val serverOrigin = server.address.toUri().origin
 
 	override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
 		val url = request.url
@@ -88,7 +89,10 @@ class JellyfinWebViewClient(
 			}
 
 			path.endsWith(SESSION_LOGOUT_PATH) -> {
-				coroutineScope.launch { sessionRepository.destroyCurrentSession() }
+				coroutineScope.launch {
+					sessionRepository.currentSession.value?.let { authenticationRepository.logout(it.serverId, it.userId) }
+					sessionRepository.destroyCurrentSession()
+				}
 				null
 			}
 

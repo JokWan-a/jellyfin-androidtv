@@ -48,14 +48,11 @@ interface ServerRepository {
 
 	fun addServer(address: String): Flow<ServerAdditionState>
 	suspend fun getServer(id: UUID, eagerUpdate: Boolean = false): Server?
-	suspend fun updateServer(server: Server, force: Boolean = false): Boolean
 	suspend fun deleteServer(server: UUID): Boolean
 
 	companion object {
 		val minimumServerVersion = Jellyfin.minimumVersion.copy(build = null)
 		val recommendedServerVersion = Jellyfin.apiVersion.copy(build = null)
-
-		val upcomingMinimumServerVersion = ServerVersion(10, 11, 0)
 	}
 }
 
@@ -190,19 +187,6 @@ class ServerRepositoryImpl(
 		}
 
 		return (updatedServer ?: server).asServer(id)
-	}
-
-	override suspend fun updateServer(server: Server, force: Boolean): Boolean {
-		// Only update existing servers
-		val serverInfo = authenticationStore.getServer(server.id) ?: return false
-
-		return try {
-			updateServerInternal(server.id, serverInfo, force) != null
-		} catch (err: ApiClientException) {
-			Timber.e(err, "Unable to update server")
-
-			false
-		}
 	}
 
 	private suspend fun updateServerInternal(

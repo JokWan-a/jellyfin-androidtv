@@ -24,6 +24,7 @@ import org.jellyfin.sdk.model.DeviceInfo
 import org.jellyfin.sdk.model.api.UserDto
 import timber.log.Timber
 import java.time.Instant
+import java.util.UUID
 
 /**
  * Repository to manage authentication of the user in the app.
@@ -33,7 +34,7 @@ interface AuthenticationRepository {
 	 * Adopt an access token obtained elsewhere (the web client) as the active native session.
 	 */
 	fun authenticateToken(server: Server, accessToken: String): Flow<LoginState>
-	fun logout(user: User): Boolean
+	fun logout(serverId: UUID, userId: UUID): Boolean
 }
 
 class AuthenticationRepositoryImpl(
@@ -108,12 +109,12 @@ class AuthenticationRepositoryImpl(
 		return authenticated
 	}
 
-	override fun logout(user: User): Boolean {
+	override fun logout(serverId: UUID, userId: UUID): Boolean {
 		val authStoreUser = authenticationStore
-			.getUser(user.serverId, user.id)
+			.getUser(serverId, userId)
 			?.copy(accessToken = null)
 
-		return if (authStoreUser != null) authenticationStore.putUser(user.serverId, user.id, authStoreUser)
+		return if (authStoreUser != null) authenticationStore.putUser(serverId, userId, authStoreUser)
 		else false
 	}
 }

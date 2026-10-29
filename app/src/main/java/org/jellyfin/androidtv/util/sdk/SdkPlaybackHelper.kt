@@ -7,7 +7,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.androidtv.data.repository.ItemRepository
 import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.ui.InteractionTrackerViewModel
 import org.jellyfin.androidtv.ui.playback.PlaybackControllerContainer
 import org.jellyfin.androidtv.ui.playback.PlaybackLauncher
 import org.jellyfin.androidtv.util.PlaybackHelper
@@ -23,6 +25,7 @@ class SdkPlaybackHelper(
 	private val userPreferences: UserPreferences,
 	private val playbackLauncher: PlaybackLauncher,
 	private val playbackControllerContainer: PlaybackControllerContainer,
+	private val interactionTracker: InteractionTrackerViewModel,
 ) : PlaybackHelper {
 	override fun retrieveAndPlay(itemIds: List<UUID>, shuffle: Boolean, position: Long?, index: Int?, context: Context) {
 		getScope(context).launch {
@@ -33,11 +36,16 @@ class SdkPlaybackHelper(
 			val items = withContext(Dispatchers.IO) {
 				val response by api.itemsApi.getItems(
 					ids = itemIds,
+					fields = ItemRepository.itemFields,
 				)
-				response.items
+				// The server does not guarantee the requested order
+				response.items.sortedBy { itemIds.indexOf(it.id) }
 			}
+			val startIndex = index ?: 0
+			val startItem = items.getOrNull(startIndex) ?: return@launch
+			interactionTracker.notifyStartSession(startItem, items)
 
-			val pos = position?.ticks ?: items[0].userData?.playbackPositionTicks?.ticks?.minus(
+			val pos = position?.ticks ?: startItem.userData?.playbackPositionTicks?.ticks?.minus(
 				resumeSubtractDuration
 			) ?: Duration.ZERO
 
@@ -46,7 +54,7 @@ class SdkPlaybackHelper(
 				items,
 				pos.inWholeMilliseconds.toInt(),
 				playbackControllerContainer.playbackController?.hasFragment() == true,
-				index ?: 0,
+				startIndex,
 				shuffle,
 			)
 		}

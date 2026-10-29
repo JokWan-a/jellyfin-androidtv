@@ -154,5 +154,5 @@ val appModule = module {
 	single { BackgroundService(get(), get(), get(), get(), get()) }
 
 	single { ReportingHelper(get()) }
-	single<PlaybackHelper> { SdkPlaybackHelper(get(), get(), get(), get()) }
+	single<PlaybackHelper> { SdkPlaybackHelper(get(), get(), get(), get(), get()) }
 }
