@@ -33,11 +33,6 @@
         <item name="android:windowExitAnimation">@anim/slide_right_out</item>
     </style>
 
-    <style name="WindowAnimation.Fade">
-        <item name="android:windowEnterAnimation">@anim/fade_in</item>
-        <item name="android:windowExitAnimation">@anim/fade_out</item>
-    </style>
-
     <style name="Button.Default" parent="android:Widget.Button">
         <item name="android:background">@drawable/button_default_back</item>
         <item name="android:foreground">@drawable/button_default_ripple</item>
