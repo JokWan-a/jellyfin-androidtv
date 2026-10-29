@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import org.jellyfin.androidtv.databinding.ClockUserBugBinding
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
-import org.jellyfin.androidtv.ui.navigation.Destinations
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -29,13 +28,11 @@ class ClockUserView @JvmOverloads constructor(
 			updateClockVisibility()
 		}
 
-	val homeButton get() = binding.home
-
 	init {
 		updateClockVisibility()
 
 		binding.home.setOnClickListener {
-			navigationRepository.reset(Destinations.home, clearHistory = true)
+			navigationRepository.reset(clearHistory = true)
 		}
 	}
 

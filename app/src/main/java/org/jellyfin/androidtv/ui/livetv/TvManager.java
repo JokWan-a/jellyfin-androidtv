@@ -8,16 +8,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.leanback.widget.HeaderItem;
-import androidx.leanback.widget.ListRow;
-import androidx.leanback.widget.Presenter;
-import androidx.leanback.widget.Row;
 
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.preference.SystemPreferences;
 import org.jellyfin.androidtv.ui.ProgramGridCell;
-import org.jellyfin.androidtv.ui.itemhandling.ItemRowAdapter;
-import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
 import org.jellyfin.androidtv.util.DateTimeExtensionsKt;
 import org.jellyfin.androidtv.util.TimeUtils;
 import org.jellyfin.androidtv.util.Utils;
@@ -26,7 +20,6 @@ import org.jellyfin.sdk.model.api.BaseItemDto;
 import org.koin.java.KoinJavaComponent;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -35,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -46,7 +38,6 @@ public class TvManager {
     private static UUID[] channelIds;
     private static HashMap<UUID, ArrayList<BaseItemDto>> mProgramsDict = new HashMap<>();
     private static LocalDateTime needLoadTime;
-    private static boolean forceReload;
 
     public static UUID getLastLiveTvChannel() {
         return Utils.uuidOrNull(KoinJavaComponent.<SystemPreferences>get(SystemPreferences.class).get(SystemPreferences.Companion.getLiveTvLastChannel()));
@@ -67,12 +58,6 @@ public class TvManager {
     public static List<BaseItemDto> getAllChannels() {
         return allChannels == null ? Collections.emptyList() : allChannels;
     }
-
-    public static void forceReload() {
-        forceReload = true;
-    }
-
-    public static boolean shouldForceReload() { return forceReload; }
 
     public static int getAllChannelsIndex(UUID id) {
         if (allChannels == null) return -1;
@@ -226,21 +211,5 @@ public class TvManager {
             }
         }
         return null;
-    }
-
-    public static void getScheduleRowsAsync(Fragment fragment, String seriesTimerId, final Presenter presenter, final MutableObjectAdapter<Row> rowAdapter) {
-        TvManagerHelperKt.getScheduleRows(fragment, seriesTimerId, timerMap -> {
-            for (Map.Entry<LocalDate, ? extends List<BaseItemDto>> entry : timerMap.entrySet()) {
-                addRow(fragment.getContext(), entry.getValue(), presenter, rowAdapter);
-            }
-            return null;
-        });
-    }
-
-    private static void addRow(Context context, List<BaseItemDto> timers, Presenter presenter, MutableObjectAdapter<Row> rowAdapter) {
-        ItemRowAdapter scheduledAdapter = new ItemRowAdapter(context, timers, presenter, rowAdapter, true);
-        scheduledAdapter.Retrieve();
-        ListRow scheduleRow = new ListRow(new HeaderItem(TimeUtils.getFriendlyDate(context, timers.get(0).getStartDate(), true)), scheduledAdapter);
-        rowAdapter.add(scheduleRow);
     }
 }

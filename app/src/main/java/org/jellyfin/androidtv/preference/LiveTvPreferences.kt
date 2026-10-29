@@ -17,7 +17,6 @@ class LiveTvPreferences(
 		val colorCodeGuide = booleanPreference("guide-colorcodedbackgrounds", false)
 		val favsAtTop = booleanPreference("livetv-favoritechannelsattop", true)
 		val showHDIndicator = booleanPreference("guide-indicator-hd", false)
-		val showLiveIndicator = booleanPreference("guide-indicator-live", true)
 		val showNewIndicator = booleanPreference("guide-indicator-new", false)
 		val showPremiereIndicator = booleanPreference("guide-indicator-premiere", true)
 		val showRepeatIndicator = booleanPreference("guide-indicator-repeat", false)

@@ -12,15 +12,8 @@ import org.jellyfin.androidtv.ui.settings.screen.customization.subtitle.Settings
 import org.jellyfin.androidtv.ui.settings.screen.customization.subtitle.SettingsSubtitlesBackgroundColorScreen
 import org.jellyfin.androidtv.ui.settings.screen.customization.subtitle.SettingsSubtitlesScreen
 import org.jellyfin.androidtv.ui.settings.screen.customization.subtitle.SettingsSubtitlesTextColorScreen
-import org.jellyfin.androidtv.ui.settings.screen.library.SettingsLibrariesDisplayGridScreen
-import org.jellyfin.androidtv.ui.settings.screen.library.SettingsLibrariesDisplayImageSizeScreen
-import org.jellyfin.androidtv.ui.settings.screen.library.SettingsLibrariesDisplayImageTypeScreen
-import org.jellyfin.androidtv.ui.settings.screen.library.SettingsLibrariesDisplayScreen
 import org.jellyfin.androidtv.ui.settings.screen.license.SettingsLicenseScreen
 import org.jellyfin.androidtv.ui.settings.screen.license.SettingsLicensesScreen
-import org.jellyfin.androidtv.ui.settings.screen.livetv.SettingsLiveTvGuideChannelOrderScreen
-import org.jellyfin.androidtv.ui.settings.screen.livetv.SettingsLiveTvGuideFiltersScreen
-import org.jellyfin.androidtv.ui.settings.screen.livetv.SettingsLiveTvGuideOptionsScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAVCLevelScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAdvancedScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackAudioBehaviorScreen
@@ -32,9 +25,7 @@ import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackHdrOve
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackHdrOverridesScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackInactivityPromptScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackMaxBitrateScreen
-import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackPhotoPlayerScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackPlayerScreen
-import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackPrerollsScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackRefreshRateSwitchingBehaviorScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackResumeSubtractDurationScreen
 import org.jellyfin.androidtv.ui.settings.screen.playback.SettingsPlaybackScreen
@@ -46,7 +37,6 @@ import org.jellyfin.androidtv.ui.settings.screen.playback.nextup.SettingsPlaybac
 import org.jellyfin.androidtv.ui.settings.screen.screensaver.SettingsScreensaverAgeRatingScreen
 import org.jellyfin.androidtv.ui.settings.screen.screensaver.SettingsScreensaverScreen
 import org.jellyfin.sdk.model.api.MediaSegmentType
-import org.jellyfin.sdk.model.serializer.toUUIDOrNull
 
 object Routes {
 	const val MAIN = "/"
@@ -57,20 +47,11 @@ object Routes {
 	const val CUSTOMIZATION_SUBTITLES_TEXT_COLOR = "/customization/subtitles/text-color"
 	const val CUSTOMIZATION_SUBTITLES_BACKGROUND_COLOR = "/customization/subtitles/background-color"
 	const val CUSTOMIZATION_SUBTITLES_EDGE_COLOR = "/customization/subtitles/edge-color"
-	const val LIBRARIES_DISPLAY = "/libraries/display/{itemId}/{displayPreferencesId}"
-	const val LIBRARIES_DISPLAY_IMAGE_SIZE = "/libraries/display/{itemId}/{displayPreferencesId}/image-size"
-	const val LIBRARIES_DISPLAY_IMAGE_TYPE = "/libraries/display/{itemId}/{displayPreferencesId}/image-type"
-	const val LIBRARIES_DISPLAY_GRID = "/libraries/display/{itemId}/{displayPreferencesId}/grid"
-	const val LIVETV_GUIDE_FILTERS = "/livetv/guide/filters"
-	const val LIVETV_GUIDE_OPTIONS = "/livetv/guide/options"
-	const val LIVETV_GUIDE_CHANNEL_ORDER = "/livetv/guide/channel-order"
 	const val PLAYBACK = "/playback"
 	const val PLAYBACK_PLAYER = "/playback/player"
-	const val PLAYBACK_PHOTO_PLAYER = "/playback/photo-player"
 	const val PLAYBACK_NEXT_UP = "/playback/next-up"
 	const val PLAYBACK_NEXT_UP_BEHAVIOR = "/playback/next-up/behavior"
 	const val PLAYBACK_INACTIVITY_PROMPT = "/playback/inactivity-prompt"
-	const val PLAYBACK_PREROLLS = "/playback/prerolls"
 	const val PLAYBACK_MEDIA_SEGMENTS = "/playback/media-segments"
 	const val PLAYBACK_MEDIA_SEGMENT = "/playback/media-segments/{segmentType}"
 	const val PLAYBACK_ADVANCED = "/playback/advanced"
@@ -118,41 +99,11 @@ val routes = mapOf<String, RouteComposable>(
 	Routes.CUSTOMIZATION_SUBTITLES_EDGE_COLOR to {
 		SettingsSubtitleTextStrokeColorScreen()
 	},
-	Routes.LIBRARIES_DISPLAY to { context ->
-		SettingsLibrariesDisplayScreen(context.parameters["itemId"]?.toUUIDOrNull()!!, context.parameters["displayPreferencesId"]!!)
-	},
-	Routes.LIBRARIES_DISPLAY_IMAGE_SIZE to { context ->
-		SettingsLibrariesDisplayImageSizeScreen(
-			context.parameters["itemId"]?.toUUIDOrNull()!!,
-			context.parameters["displayPreferencesId"]!!
-		)
-	},
-	Routes.LIBRARIES_DISPLAY_IMAGE_TYPE to { context ->
-		SettingsLibrariesDisplayImageTypeScreen(
-			context.parameters["itemId"]?.toUUIDOrNull()!!,
-			context.parameters["displayPreferencesId"]!!
-		)
-	},
-	Routes.LIBRARIES_DISPLAY_GRID to { context ->
-		SettingsLibrariesDisplayGridScreen(context.parameters["itemId"]?.toUUIDOrNull()!!, context.parameters["displayPreferencesId"]!!)
-	},
-	Routes.LIVETV_GUIDE_FILTERS to {
-		SettingsLiveTvGuideFiltersScreen()
-	},
-	Routes.LIVETV_GUIDE_OPTIONS to {
-		SettingsLiveTvGuideOptionsScreen()
-	},
-	Routes.LIVETV_GUIDE_CHANNEL_ORDER to {
-		SettingsLiveTvGuideChannelOrderScreen()
-	},
 	Routes.PLAYBACK to {
 		SettingsPlaybackScreen()
 	},
 	Routes.PLAYBACK_PLAYER to {
 		SettingsPlaybackPlayerScreen()
-	},
-	Routes.PLAYBACK_PHOTO_PLAYER to {
-		SettingsPlaybackPhotoPlayerScreen()
 	},
 	Routes.PLAYBACK_NEXT_UP to {
 		SettingsPlaybackNextUpScreen()
@@ -162,9 +113,6 @@ val routes = mapOf<String, RouteComposable>(
 	},
 	Routes.PLAYBACK_INACTIVITY_PROMPT to {
 		SettingsPlaybackInactivityPromptScreen()
-	},
-	Routes.PLAYBACK_PREROLLS to {
-		SettingsPlaybackPrerollsScreen()
 	},
 	Routes.PLAYBACK_MEDIA_SEGMENTS to {
 		SettingsPlaybackMediaSegmentsScreen()

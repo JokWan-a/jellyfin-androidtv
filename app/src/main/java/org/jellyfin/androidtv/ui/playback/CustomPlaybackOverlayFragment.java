@@ -54,15 +54,13 @@ import org.jellyfin.androidtv.ui.ScrollViewListener;
 import org.jellyfin.androidtv.ui.itemhandling.ChapterItemInfoBaseRowItem;
 import org.jellyfin.androidtv.ui.itemhandling.ItemRowAdapter;
 import org.jellyfin.androidtv.ui.livetv.LiveTvGuide;
-import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragment;
-import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragmentHelperKt;
+import org.jellyfin.androidtv.ui.livetv.LiveTvGuideKt;
 import org.jellyfin.androidtv.ui.livetv.TvManager;
 import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment;
 import org.jellyfin.androidtv.ui.presentation.CardPresenter;
 import org.jellyfin.androidtv.ui.presentation.ChannelCardPresenter;
-import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
 import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter;
 import org.jellyfin.androidtv.util.CoroutineUtils;
 import org.jellyfin.androidtv.util.DateTimeExtensionsKt;
@@ -845,7 +843,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                 if (pageUpStart < 0) pageUpStart = 0;
 
                 TextView placeHolder = new TextView(requireContext());
-                placeHolder.setHeight(Utils.convertDpToPixel(requireContext(), LiveTvGuideFragment.GUIDE_ROW_HEIGHT_DP));
+                placeHolder.setHeight(Utils.convertDpToPixel(requireContext(), LiveTvGuide.GUIDE_ROW_HEIGHT_DP));
                 tvGuideBinding.channels.addView(placeHolder);
                 displayedChannels = 0;
 
@@ -909,7 +907,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                 if (pageDnEnd >= mAllChannels.size()) pageDnEnd = mAllChannels.size() - 1;
 
                 TextView placeHolder = new TextView(requireContext());
-                placeHolder.setHeight(Utils.convertDpToPixel(requireContext(), LiveTvGuideFragment.GUIDE_ROW_HEIGHT_DP));
+                placeHolder.setHeight(Utils.convertDpToPixel(requireContext(), LiveTvGuide.GUIDE_ROW_HEIGHT_DP));
                 tvGuideBinding.channels.addView(placeHolder);
 
                 String label = TextUtilsKt.getLoadChannelsLabel(requireContext(), mAllChannels.get(mCurrentDisplayChannelEndNdx + 1).getNumber(), mAllChannels.get(pageDnEnd).getNumber());
@@ -932,8 +930,8 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     }
 
     private LinearLayout getProgramRow(List<BaseItemDto> programs, UUID channelId) {
-        int guideRowHeightPx = Utils.convertDpToPixel(requireContext(), LiveTvGuideFragment.GUIDE_ROW_HEIGHT_DP);
-        int guideRowWidthPerMinPx = Utils.convertDpToPixel(requireContext(), LiveTvGuideFragment.GUIDE_ROW_WIDTH_PER_MIN_DP);
+        int guideRowHeightPx = Utils.convertDpToPixel(requireContext(), LiveTvGuide.GUIDE_ROW_HEIGHT_DP);
+        int guideRowWidthPerMinPx = Utils.convertDpToPixel(requireContext(), LiveTvGuide.GUIDE_ROW_WIDTH_PER_MIN_DP);
 
         LinearLayout programRow = new LinearLayout(requireContext());
         if (programs.size() == 0) {
@@ -942,7 +940,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             int slot = 0;
 
             do {
-                BaseItemDto empty = LiveTvGuideFragmentHelperKt.createNoProgramDataBaseItem(
+                BaseItemDto empty = LiveTvGuideKt.createNoProgramDataBaseItem(
                         getContext(),
                         channelId,
                         mCurrentGuideStart.plusMinutes(30l * slot),
@@ -970,7 +968,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             if (start.isBefore(prevEnd)) continue;
 
             if (start.isAfter(prevEnd)) {
-                BaseItemDto empty = LiveTvGuideFragmentHelperKt.createNoProgramDataBaseItem(
+                BaseItemDto empty = LiveTvGuideKt.createNoProgramDataBaseItem(
                         getContext(),
                         channelId,
                         prevEnd,
@@ -1283,7 +1281,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
 
         if (chapters != null && !chapters.isEmpty()) {
             // create chapter row for later use
-            ItemRowAdapter chapterAdapter = new ItemRowAdapter(requireContext(), BaseItemExtensionsKt.buildChapterItems(item), new CardPresenter(true, 110), new MutableObjectAdapter<Row>());
+            ItemRowAdapter chapterAdapter = new ItemRowAdapter(BaseItemExtensionsKt.buildChapterItems(item), new CardPresenter(true, 110));
             chapterAdapter.Retrieve();
             if (mChapterRow != null) mPopupRowAdapter.remove(mChapterRow);
             mChapterRow = new ListRow(new HeaderItem(requireContext().getString(R.string.chapters)), chapterAdapter);
@@ -1313,7 +1311,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         if (navigationRepository.getValue().getCanGoBack()) {
             navigationRepository.getValue().goBack();
         } else {
-            navigationRepository.getValue().reset(Destinations.INSTANCE.getHome());
+            navigationRepository.getValue().reset(null);
         }
     }
 

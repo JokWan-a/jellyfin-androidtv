@@ -45,7 +45,6 @@ fun getWebRoute(action: String?, query: String?, itemId: String?): String? {
 class StartupActivity : FragmentActivity() {
 	companion object {
 		const val EXTRA_ITEM_ID = "ItemId"
-		const val EXTRA_HIDE_SPLASH = "HideSplash"
 		const val EXTRA_SELECT_SERVER = "SelectServer"
 	}
 

@@ -49,9 +49,6 @@ object Utils : KoinComponent {
 	fun isTrue(value: Boolean?): Boolean = value == true
 
 	@JvmStatic
-	fun <T> getSafeValue(value: T?, defaultValue: T): T = value ?: defaultValue
-
-	@JvmStatic
 	fun isEmpty(value: String?): Boolean = value.isNullOrEmpty()
 
 	@JvmStatic

@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.data.model.DataRefreshService
 import org.jellyfin.androidtv.data.repository.ExternalAppRepository
 import org.jellyfin.androidtv.ui.playback.external.ExternalPlayData
 import org.jellyfin.androidtv.ui.playback.external.ExternalPlayResult
@@ -25,7 +24,6 @@ import org.jellyfin.sdk.api.client.extensions.playStateApi
 import org.jellyfin.sdk.api.client.extensions.subtitleApi
 import org.jellyfin.sdk.api.client.extensions.videosApi
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.MediaSourceInfo
 import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
@@ -37,7 +35,6 @@ import org.jellyfin.sdk.model.serializer.toUUIDOrNull
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
-import java.time.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -53,7 +50,6 @@ class ExternalPlayerActivity : FragmentActivity() {
 	private var currentPlayer: ExternalPlayerApi? = null
 
 	private val videoQueueManager by inject<VideoQueueManager>()
-	private val dataRefreshService by inject<DataRefreshService>()
 	private val externalAppRepository by inject<ExternalAppRepository>()
 	private val api by inject<ApiClient>()
 
@@ -235,14 +231,6 @@ class ExternalPlayerActivity : FragmentActivity() {
 		}.onFailure { error ->
 			Timber.w(error, "Failed to report playback stop event")
 			Toast.makeText(this@ExternalPlayerActivity, R.string.video_error_unknown_error, Toast.LENGTH_LONG).show()
-		}
-
-		// Update data refresh service
-		dataRefreshService.lastPlayback = Instant.now()
-		when (item.type) {
-			BaseItemKind.MOVIE -> dataRefreshService.lastMoviePlayback = Instant.now()
-			BaseItemKind.EPISODE -> dataRefreshService.lastTvPlayback = Instant.now()
-			else -> Unit
 		}
 
 		// Act on

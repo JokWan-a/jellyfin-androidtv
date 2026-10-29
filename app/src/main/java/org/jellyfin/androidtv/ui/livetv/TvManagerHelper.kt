@@ -9,14 +9,9 @@ import org.jellyfin.androidtv.preference.LiveTvPreferences
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemSortBy
-import org.jellyfin.sdk.model.api.LocationType
-import org.jellyfin.sdk.model.api.MediaType
 import org.jellyfin.sdk.model.api.SortOrder
-import org.jellyfin.sdk.model.serializer.toUUIDOrNull
 import org.koin.android.ext.android.inject
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -75,49 +70,6 @@ fun getPrograms(
 		}.fold(
 			onSuccess = { programs -> callback(programs) },
 			onFailure = { callback(null) },
-		)
-	}
-}
-
-fun getScheduleRows(
-	fragment: Fragment,
-	seriesTimerId: String?,
-	callback: (timers: Map<LocalDate, List<BaseItemDto>>?) -> Unit,
-) {
-	val api by fragment.inject<ApiClient>()
-
-	fragment.lifecycleScope.launch {
-		runCatching {
-			withContext(Dispatchers.IO) {
-				api.liveTvApi.getTimers(
-					seriesTimerId = seriesTimerId,
-				).content.items
-			}
-		}.fold(
-			onSuccess = { timers ->
-				val groupedTimers = timers
-					.filterNot { it.startDate == null }
-					.map { timer ->
-						timer.programInfo ?: BaseItemDto(
-							id = requireNotNull(timer.id?.toUUIDOrNull()),
-							channelName = timer.channelName,
-							name = timer.name.orEmpty(),
-							type = BaseItemKind.PROGRAM,
-							mediaType = MediaType.UNKNOWN,
-							timerId = timer.id,
-							seriesTimerId = timer.seriesTimerId,
-							startDate = timer.startDate,
-							endDate = timer.endDate,
-						)
-					}
-					.map { it.copy(locationType = LocationType.VIRTUAL) }
-					.groupBy { it.startDate!!.toLocalDate() }
-
-				callback(groupedTimers)
-			},
-			onFailure = {
-				callback(null)
-			},
 		)
 	}
 }

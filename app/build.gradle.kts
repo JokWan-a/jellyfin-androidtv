@@ -165,9 +165,6 @@ dependencies {
 	implementation(libs.jellyfin.androidx.media3.ffmpeg.decoder)
 	implementation(libs.libass.media3)
 
-	// Markdown
-	implementation(libs.bundles.markwon)
-
 	// Image utility
 	implementation(libs.bundles.coil)
 

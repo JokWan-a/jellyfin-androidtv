@@ -5,19 +5,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jellyfin.androidtv.BuildConfig
 import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.auth.model.Server
-import org.jellyfin.androidtv.auth.repository.ServerRepository
 import org.jellyfin.androidtv.data.model.AppNotification
 import org.jellyfin.androidtv.preference.SystemPreferences
 import org.jellyfin.androidtv.util.isTvDevice
-import org.jellyfin.sdk.model.ServerVersion
 
 interface NotificationsRepository {
 	val notifications: StateFlow<List<AppNotification>>
 
-	fun dismissNotification(item: AppNotification)
 	fun addDefaultNotifications()
-	fun updateServerNotifications(server: Server?)
 }
 
 class NotificationsRepositoryImpl(
@@ -28,11 +23,6 @@ class NotificationsRepositoryImpl(
 
 	init {
 		addDefaultNotifications()
-	}
-
-	override fun dismissNotification(item: AppNotification) {
-		notifications.value = notifications.value.filter { it != item }
-		item.dismiss()
 	}
 
 	override fun addDefaultNotifications() {
@@ -48,10 +38,6 @@ class NotificationsRepositoryImpl(
 		val notification = AppNotification(message, dismiss, public)
 		notifications.value += notification
 		return notification
-	}
-
-	private fun removeNotification(notification: AppNotification) {
-		notifications.value -= notification
 	}
 
 	private fun addUiModeNotification() {
@@ -75,25 +61,6 @@ class NotificationsRepositoryImpl(
 				systemPreferences[SystemPreferences.dismissedBetaNotificationVersion] =
 					currentVersion
 			}
-		}
-	}
-
-	// Update server notification
-	private var _updateServerNotification: AppNotification? = null
-	override fun updateServerNotifications(server: Server?) {
-		// Remove current update notification
-		_updateServerNotification?.let(::removeNotification)
-
-		val currentServerVersion = server?.version?.let(ServerVersion::fromString) ?: return
-		if (currentServerVersion < ServerRepository.upcomingMinimumServerVersion) {
-			_updateServerNotification =
-				addNotification(
-					message = context.getString(
-						R.string.app_notification_update_soon,
-						currentServerVersion,
-						ServerRepository.upcomingMinimumServerVersion
-					),
-				)
 		}
 	}
 }

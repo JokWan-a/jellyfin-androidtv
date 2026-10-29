@@ -4,12 +4,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.ui.playback.PlaybackControllerContainer
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -23,7 +19,6 @@ class InteractionTrackerViewModel(
 ) : ViewModel() {
 	// Screensaver
 
-	private var timer: Job? = null
 	private var locks = 0
 
 	// Still Watching
@@ -35,27 +30,12 @@ class InteractionTrackerViewModel(
 
 	// Preferences
 
-	private val inAppEnabled get() = userPreferences[UserPreferences.screensaverInAppEnabled]
-	private val timeout get() = userPreferences[UserPreferences.screensaverInAppTimeout].milliseconds
 	private val stillWatchingBehavior get() = userPreferences[UserPreferences.stillWatchingBehavior]
 
 	// State
 
-	private val _screensaverVisible = MutableStateFlow(false)
-	val visible get() = _screensaverVisible.asStateFlow()
-
-	private val _keepScreenOn = MutableStateFlow(inAppEnabled)
+	private val _keepScreenOn = MutableStateFlow(false)
 	val keepScreenOn get() = _keepScreenOn.asStateFlow()
-
-	var activityPaused: Boolean = false
-		set(value) {
-			field = value
-			notifyInteraction(canCancel = true, userInitiated = false)
-		}
-
-	init {
-		notifyInteraction(canCancel = true, userInitiated = false)
-	}
 
 	fun getShowStillWatching(): Boolean {
 		if (!stillWatchingBehavior.enabled) return false
@@ -88,31 +68,15 @@ class InteractionTrackerViewModel(
 		if (item.type == BaseItemKind.EPISODE) isWatchingEpisodes = true
 	}
 
-	fun notifyInteraction(canCancel: Boolean, userInitiated: Boolean) {
-		// Cancel pending screensaver timer (if any)
-		timer?.cancel()
-
+	fun notifyInteraction(userInitiated: Boolean) {
 		// If watching episodes, reset episode count and watch time
 		if (isWatchingEpisodes && userInitiated) {
 			resetSession()
 			episodeWasInterrupted = true
 		}
 
-		// Hide screensaver when interacted with allowed cancellation or when disabled
-		if (_screensaverVisible.value && (canCancel || !inAppEnabled || activityPaused)) {
-			_screensaverVisible.value = false
-		}
-
-		// Create new timer to show screensaver when enabled
-		if (inAppEnabled && !activityPaused && locks == 0) {
-			timer = viewModelScope.launch {
-				delay(timeout)
-				_screensaverVisible.value = true
-			}
-		}
-
 		// Update KEEP_SCREEN_ON flag value
-		_keepScreenOn.value = inAppEnabled || locks > 0
+		_keepScreenOn.value = locks > 0
 	}
 
 	/**
@@ -140,7 +104,7 @@ class InteractionTrackerViewModel(
 			if (active) return
 			lifecycle.addObserver(this)
 			locks++
-			notifyInteraction(canCancel = true, userInitiated = false)
+			notifyInteraction(userInitiated = false)
 			active = true
 		}
 
@@ -148,7 +112,7 @@ class InteractionTrackerViewModel(
 			if (!active) return
 			locks--
 			lifecycle.removeObserver(this)
-			notifyInteraction(canCancel = false, userInitiated = false)
+			notifyInteraction(userInitiated = false)
 			active = false
 		}
 	}

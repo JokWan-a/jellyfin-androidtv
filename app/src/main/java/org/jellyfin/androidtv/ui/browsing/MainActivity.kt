@@ -129,7 +129,7 @@ class MainActivity : FragmentActivity() {
 
 			JellyfinTheme {
 				ProvideLocalInteractionTracker(
-					interactionTracker = { interactionTrackerViewModel.notifyInteraction(false, userInitiated = true) }
+					interactionTracker = { interactionTrackerViewModel.notifyInteraction(userInitiated = true) }
 				) {
 					Box {
 						// Keep the web app on top of the (transparent) navigation host while it's in use so it receives pointer input
@@ -230,14 +230,6 @@ class MainActivity : FragmentActivity() {
 		super.onResume()
 
 		applyTheme()
-
-		interactionTrackerViewModel.activityPaused = false
-	}
-
-	override fun onPause() {
-		super.onPause()
-
-		interactionTrackerViewModel.activityPaused = true
 	}
 
 	override fun onStop() {

@@ -14,9 +14,6 @@
         tools:ignore="LeanbackUsesWifi" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!-- Search permissions (voice to text) -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <!-- Device feature requirements -->
     <uses-feature
         android:name="android.software.leanback"
@@ -24,18 +21,8 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-    <uses-feature
-        android:name="android.hardware.microphone"
-        android:required="false" />
 
     <queries>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data
-                android:host="youtube.com"
-                android:scheme="https" />
-        </intent>
-
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:mimeType="video/*" />

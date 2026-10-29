@@ -2,7 +2,6 @@ package org.jellyfin.androidtv.preference
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
 import org.jellyfin.androidtv.preference.constant.AVCLevel
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
@@ -27,7 +26,6 @@ import org.jellyfin.preference.longPreference
 import org.jellyfin.preference.store.SharedPreferenceStore
 import org.jellyfin.preference.stringPreference
 import org.jellyfin.sdk.model.api.MediaSegmentType
-import kotlin.time.Duration.Companion.minutes
 
 /**
  * User preferences are configurable by the user and change behavior of the application.
@@ -57,11 +55,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var maxBitrate = stringPreference("pref_max_bitrate", "100")
 
 		/**
-		 * Auto-play next item
-		 */
-		var mediaQueuingEnabled = booleanPreference("pref_enable_tv_queuing", true)
-
-		/**
 		 * Enable the next up screen or not
 		 */
 		var nextUpBehavior = enumPreference("next_up_behavior", NextUpBehavior.EXTENDED)
@@ -76,11 +69,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Duration in seconds to subtract from resume time
 		 */
 		var resumeSubtractDuration = stringPreference("pref_resume_preroll", "0")
-
-		/**
-		 * Enable cinema mode
-		 */
-		var cinemaModeEnabled = booleanPreference("pref_enable_cinema_mode", true)
 
 		/**
 		 * Enable still watching
@@ -212,12 +200,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var seriesThumbnailsEnabled = booleanPreference("pref_enable_series_thumbnails", true)
 
 		/**
-		 * Maximum days since last watch to show an item in next up.
-		 * Set to 0 to disable (no cutoff).
-		 */
-		var homeNextUpMaxDays = intPreference("home_next_up_max_days", 0)
-
-		/**
 		 * Subtitles foreground color
 		 */
 		var subtitlesBackgroundColor = longPreference("subtitles_background_color", 0x00FFFFFF)
@@ -246,16 +228,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Subtitles offset
 		 */
 		var subtitlesOffsetPosition = floatPreference("subtitles_offset_position", 0.08f)
-
-		/**
-		 * Show screensaver in app
-		 */
-		var screensaverInAppEnabled = booleanPreference("screensaver_inapp_enabled", true)
-
-		/**
-		 * Timeout before showing the screensaver in app, depends on [screensaverInAppEnabled].
-		 */
-		var screensaverInAppTimeout = longPreference("screensaver_inapp_timeout", 5.minutes.inWholeMilliseconds)
 
 		/**
 		 * Age rating used to filter items in the screensaver. Use -1 to disable (omits parameter from requests).
@@ -307,11 +279,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Enable the use of software-based codecs.
 		 */
 		var softwareCodecsEnabled = booleanPreference("software_codecs_enabled", true)
-
-		/**
-		 * Stores the interval for the photo player.
-		 */
-		var photoPlayerPresentationDelay = longPreference("photo_player_presentation_delay", 8000)
 
 		/**
 		 * Integrate with androidx.tvprovider for the Android TV home screen.

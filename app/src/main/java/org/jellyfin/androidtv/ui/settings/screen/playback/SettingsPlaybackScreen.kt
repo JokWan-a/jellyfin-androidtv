@@ -67,15 +67,6 @@ fun SettingsPlaybackScreen() {
 
 		item {
 			ListButton(
-				leadingContent = { Icon(painterResource(R.drawable.ic_photo), contentDescription = null) },
-				headingContent = { Text(stringResource(R.string.photo_player)) },
-				onClick = { router.push(Routes.PLAYBACK_PHOTO_PLAYER) },
-				modifier = Modifier.focusKey(Routes.PLAYBACK_PHOTO_PLAYER)
-			)
-		}
-
-		item {
-			ListButton(
 				leadingContent = { Icon(painterResource(R.drawable.ic_next_up), contentDescription = null) },
 				headingContent = { Text(stringResource(R.string.pref_playback_next_up)) },
 				onClick = { router.push(Routes.PLAYBACK_NEXT_UP) },
@@ -91,15 +82,6 @@ fun SettingsPlaybackScreen() {
 				captionContent = { Text(stringResource(stillWatchingBehavior.nameRes)) },
 				onClick = { router.push(Routes.PLAYBACK_INACTIVITY_PROMPT) },
 				modifier = Modifier.focusKey(Routes.PLAYBACK_INACTIVITY_PROMPT)
-			)
-		}
-
-		item {
-			ListButton(
-				leadingContent = { Icon(painterResource(R.drawable.ic_trailer), contentDescription = null) },
-				headingContent = { Text(stringResource(R.string.pref_playback_prerolls)) },
-				onClick = { router.push(Routes.PLAYBACK_PREROLLS) },
-				modifier = Modifier.focusKey(Routes.PLAYBACK_PREROLLS)
 			)
 		}
 

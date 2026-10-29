@@ -10,8 +10,6 @@ import org.jellyfin.androidtv.util.getTimeFormatter
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.LocationType
-import org.jellyfin.sdk.model.api.PersonKind
-import org.jellyfin.sdk.model.api.PlayAccess
 import java.time.LocalDateTime
 
 fun BaseItemDto.getSeasonEpisodeName(context: Context): String {
@@ -48,13 +46,6 @@ fun BaseItemDto.getDisplayName(context: Context): String {
 }
 
 
-fun BaseItemDto?.canPlay() = this != null
-	&& playAccess != PlayAccess.NONE
-	&& isPlaceHolder != true
-	&& (type != BaseItemKind.EPISODE || locationType != LocationType.VIRTUAL)
-	&& type != BaseItemKind.PERSON
-	&& (isFolder != true || childCount?.takeIf { it > 0 } != null)
-
 fun BaseItemDto.isLiveTv() = type == BaseItemKind.PROGRAM || type == BaseItemKind.LIVE_TV_CHANNEL
 fun BaseItemDto.isNew() = isSeries == true && isNews != true && isRepeat != true
 
@@ -88,8 +79,6 @@ fun BaseItemDto.getProgramSubText(context: Context) = buildString {
 		)
 	)
 }
-
-fun BaseItemDto.getFirstPerson(searchedType: PersonKind) = people?.firstOrNull { it.type == searchedType }
 
 fun BaseItemDto.getFullName(context: Context): String? = when (type) {
 	BaseItemKind.EPISODE -> buildList {

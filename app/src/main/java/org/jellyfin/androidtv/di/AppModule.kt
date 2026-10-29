@@ -1,6 +1,5 @@
 package org.jellyfin.androidtv.di
 
-import android.content.Context
 import androidx.lifecycle.ProcessLifecycleOwner
 import coil3.ImageLoader
 import coil3.annotation.ExperimentalCoilApi
@@ -16,7 +15,6 @@ import org.jellyfin.androidtv.auth.repository.ServerRepository
 import org.jellyfin.androidtv.auth.repository.UserRepository
 import org.jellyfin.androidtv.auth.repository.UserRepositoryImpl
 import org.jellyfin.androidtv.data.eventhandling.SocketHandler
-import org.jellyfin.androidtv.data.model.DataRefreshService
 import org.jellyfin.androidtv.data.repository.CustomMessageRepository
 import org.jellyfin.androidtv.data.repository.CustomMessageRepositoryImpl
 import org.jellyfin.androidtv.data.repository.ExternalAppRepository
@@ -29,7 +27,6 @@ import org.jellyfin.androidtv.data.repository.UserViewsRepositoryImpl
 import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.integration.dream.DreamViewModel
 import org.jellyfin.androidtv.ui.InteractionTrackerViewModel
-import org.jellyfin.androidtv.ui.itemhandling.ItemLauncher
 import org.jellyfin.androidtv.ui.navigation.Destinations
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository
 import org.jellyfin.androidtv.ui.navigation.NavigationRepositoryImpl
@@ -44,17 +41,10 @@ import org.jellyfin.androidtv.ui.playback.nextup.NextUpViewModel
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepository
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepositoryImpl
 import org.jellyfin.androidtv.ui.playback.stillwatching.StillWatchingViewModel
-import org.jellyfin.androidtv.ui.player.photo.PhotoPlayerViewModel
-import org.jellyfin.androidtv.ui.search.SearchFragmentDelegate
-import org.jellyfin.androidtv.ui.search.SearchRepository
-import org.jellyfin.androidtv.ui.search.SearchRepositoryImpl
-import org.jellyfin.androidtv.ui.search.SearchViewModel
 import org.jellyfin.androidtv.ui.settings.compat.SettingsViewModel
 import org.jellyfin.androidtv.ui.startup.ServerAddViewModel
 import org.jellyfin.androidtv.ui.startup.StartupViewModel
 import org.jellyfin.androidtv.util.AndroidVersion
-import org.jellyfin.androidtv.util.KeyProcessor
-import org.jellyfin.androidtv.util.MarkdownRenderer
 import org.jellyfin.androidtv.util.PlaybackHelper
 import org.jellyfin.androidtv.util.apiclient.ReportingHelper
 import org.jellyfin.androidtv.util.coil.CoilTimberLogger
@@ -135,17 +125,15 @@ val appModule = module {
 	}
 
 	// Non API related
-	single { DataRefreshService() }
 	single { PlaybackControllerContainer() }
 	single { InteractionTrackerViewModel(get(), get()) }
 
 	single<UserRepository> { UserRepositoryImpl() }
-	single<UserViewsRepository> { UserViewsRepositoryImpl(get()) }
+	single<UserViewsRepository> { UserViewsRepositoryImpl() }
 	single<NotificationsRepository> { NotificationsRepositoryImpl(get(), get()) }
-	single<ItemMutationRepository> { ItemMutationRepositoryImpl(get(), get()) }
+	single<ItemMutationRepository> { ItemMutationRepositoryImpl(get()) }
 	single<CustomMessageRepository> { CustomMessageRepositoryImpl() }
 	single<NavigationRepository> { NavigationRepositoryImpl(Destinations.webApp) }
-	single<SearchRepository> { SearchRepositoryImpl(get()) }
 	single<MediaSegmentRepository> { MediaSegmentRepositoryImpl(get(), get()) }
 	single<ExternalAppRepository> { ExternalAppRepository(get(), getAll(), get<DefaultExternalPlayerApi>()) }
 
@@ -160,18 +148,11 @@ val appModule = module {
 	viewModel { ServerAddViewModel(get()) }
 	viewModel { NextUpViewModel(get(), get(), get()) }
 	viewModel { StillWatchingViewModel(get(), get(), get(), get()) }
-	viewModel { PhotoPlayerViewModel(get(), get()) }
-	viewModel { SearchViewModel(get()) }
 	viewModel { DreamViewModel(get(), get(), get(), get(), get()) }
 	viewModel { SettingsViewModel() }
 
 	single { BackgroundService(get(), get(), get(), get(), get()) }
 
-	single { MarkdownRenderer(get()) }
-	single { ItemLauncher() }
-	single { KeyProcessor() }
-	single { ReportingHelper(get(), get()) }
+	single { ReportingHelper(get()) }
 	single<PlaybackHelper> { SdkPlaybackHelper(get(), get(), get(), get()) }
-
-	factory { (context: Context) -> SearchFragmentDelegate(context, get(), get()) }
 }

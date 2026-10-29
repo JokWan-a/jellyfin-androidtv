@@ -16,7 +16,6 @@ import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.data.compat.PlaybackException;
 import org.jellyfin.androidtv.data.compat.StreamInfo;
 import org.jellyfin.androidtv.data.compat.VideoOptions;
-import org.jellyfin.androidtv.data.model.DataRefreshService;
 import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.preference.UserSettingPreferences;
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior;
@@ -64,7 +63,6 @@ public class PlaybackController implements PlaybackControllerNotifiable {
     private Lazy<UserPreferences> userPreferences = inject(UserPreferences.class);
     private Lazy<VideoQueueManager> videoQueueManager = inject(VideoQueueManager.class);
     private Lazy<ApiClient> api = inject(ApiClient.class);
-    private Lazy<DataRefreshService> dataRefreshService = inject(DataRefreshService.class);
     private Lazy<ReportingHelper> reportingHelper = inject(ReportingHelper.class);
     private final Lazy<InteractionTrackerViewModel> lazyInteractionTracker = inject(InteractionTrackerViewModel.class);
 
@@ -706,7 +704,6 @@ public class PlaybackController implements PlaybackControllerNotifiable {
                 mVideoManager.start();
             }
 
-            dataRefreshService.getValue().setLastPlayedItem(item);
             reportingHelper.getValue().reportStart(mFragment, PlaybackController.this, item, response, mbPos, false);
 
             return null;

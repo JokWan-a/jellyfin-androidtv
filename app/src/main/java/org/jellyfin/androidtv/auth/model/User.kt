@@ -34,14 +34,3 @@ data class PrivateUser(
 	override val imageTag: String?,
 	val lastUsed: Long,
 ) : User()
-
-/**
- * Represents a user stored server side. Found using the Public User endpoint.
- */
-data class PublicUser(
-	override val id: UUID,
-	override val serverId: UUID,
-	override val name: String,
-	override val accessToken: String?,
-	override val imageTag: String?,
-) : User()
